@@ -74,7 +74,6 @@ namespace TradingBot
         {
             string queryString = GenerateQueryString(parameters);
             string rawData = _timeStamp + apiKey + recvWindow + queryString;
-
             return ComputeSignature(rawData);
         }
 
@@ -99,6 +98,7 @@ namespace TradingBot
             string signature = method == HttpMethod.Post ? GeneratePostSignature(parameters, timestamp)
                                                          : GenerateGetSignature(parameters, timestamp);
             string finalUri = method == HttpMethod.Post ? $"{net}{requestUri}" : $"{net}{requestUri}?{queryString}";
+
             HttpRequestMessage request = new(method, finalUri)
             {
                 Content = method == HttpMethod.Post ? new StringContent(jsonPayload, Encoding.UTF8, "application/json") : null
@@ -198,7 +198,6 @@ namespace TradingBot
                 {"stopLoss", stopLoss},
                 {"positionIdx", 0}
             };
-            //============== INCOMPLETE
             return await ProcessHttp(HttpMethod.Post, parameters, "/v5/position/trading-stop");
         }
     }

@@ -28,7 +28,7 @@
             await bybitTrade.SetLeverage("BLZUSDT", "6", "4");
 
             // Update Leverage
-            // For the current 27 units of BLZUSDT, UPDATE the buy leverage to 6 and sell leverage to 4
+            // For the current 27 units of BLZUSDT, UPDATE the buy leverage to 16 and sell leverage to 14
             await bybitTrade.SetLeverage("BLZUSDT", "16", "14");
 
             // Set trading stop
