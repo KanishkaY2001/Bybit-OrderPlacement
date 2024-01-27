@@ -151,6 +151,7 @@ namespace TradingBot
                 {"side", side},
                 {"orderType", settings.orderType},
                 {"qty", quantity},
+                {"positionIdx", 1},
                 {"timeInForce", settings.timeInForce},
             };
             return await ProcessHttp(HttpMethod.Post, parameters, "/v5/order/create");

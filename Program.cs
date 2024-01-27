@@ -6,15 +6,15 @@
         {
             var bybitTrade = new BybitTrade
             (
-                "1JTREInfQx0zQ5ARwI", // ApiKey
-                "WVDEWELawuoVRRCwQBdfSOZCU9k8O4PBv3VB", // ApiSecret
-                "testnet" // "testnet" or "mainnet"
+                "yVPtPiuyLG5dIEqYDp", // ApiKey
+                "GSvQ7BS73yA3gIOgT6DG1JfkwOXxV6f8OSfY", // ApiSecret
+                "mainnet" // "testnet" or "mainnet"
             );
 
             // Place "buy" order
             // Purchase 50 units of BLZUSDT
-            await bybitTrade.BuyOrder("BLZUSDT", "50");
-
+            await bybitTrade.BuyOrder("BLZUSDT", "5");
+            /**
             // Place "sell" order
             // Sell 8 units of BLZUSDT
             await bybitTrade.SellOrder("BLZUSDT", "27");
@@ -38,6 +38,7 @@
             // Update trading stop
             // For the current 27 units of BLZUSDT, UPDATE the tp to 10, and SL to 0.1
             await bybitTrade.SetTradingStop("BLZUSDT", "10", "0.1");
+            **/
         }
     }
 }
