@@ -13,12 +13,13 @@
 
             // Place "buy" order
             // Purchase 50 units of BLZUSDT
-            await bybitTrade.BuyOrder("BLZUSDT", "5");
-            /**
+            //await bybitTrade.BuyOrder("BLZUSDT", "5");
+            
             // Place "sell" order
             // Sell 8 units of BLZUSDT
-            await bybitTrade.SellOrder("BLZUSDT", "27");
-
+            await bybitTrade.SellOrder("BLZUSDT", "5");
+            
+            /**
             // Check position
             // Check current position for BLZUSDT
             await bybitTrade.Position("BLZUSDT");
