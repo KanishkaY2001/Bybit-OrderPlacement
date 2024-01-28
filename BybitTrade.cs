@@ -24,6 +24,16 @@ namespace TradingBot
         public long time { get; set; }
     }
 
+    public class KlineRoot
+    {
+        public KlineResult result { get; set; } = new KlineResult();
+    }
+
+    public class KlineResult
+    {
+        public List<List<string>> list { get; set; } = new List<List<string>>();
+    }
+
     class BybitHttp
     {
         public HttpClient client { get; set; }
@@ -114,7 +124,6 @@ namespace TradingBot
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 string responseJson = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(responseJson);
                 return responseJson;
             }
             catch (HttpRequestException e)
@@ -136,12 +145,12 @@ namespace TradingBot
             http = new BybitHttp(key, secret);
         }
 
-        private async Task<bool> ProcessHttp(HttpMethod method, Dictionary<string, object> parameters, string requestUri)
+        private async Task<string> ProcessHttp(HttpMethod method, Dictionary<string, object> parameters, string requestUri)
         {
-            return await http.SEND(method, requestUri, parameters, settings) != string.Empty ? true : false;
+            return await http.SEND(method, requestUri, parameters, settings);
         }
 
-        public async Task<bool> PlaceOrder(string symbol, string quantity, string side)
+        public async Task<string> PlaceOrder(string symbol, string quantity, string side)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -157,17 +166,17 @@ namespace TradingBot
             return await ProcessHttp(HttpMethod.Post, parameters, "/v5/order/create");
         }
 
-        public async Task<bool> BuyOrder(string symbol, string quantity)
+        public async Task<string> BuyOrder(string symbol, string quantity)
         {
             return await PlaceOrder(symbol, quantity, "Buy");
         }
 
-        public async Task<bool> SellOrder(string symbol, string quantity)
+        public async Task<string> SellOrder(string symbol, string quantity)
         {
             return await PlaceOrder(symbol, quantity, "Sell");
         }
 
-        public async Task<bool> Position(string symbol)
+        public async Task<string> Position(string symbol)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -177,7 +186,7 @@ namespace TradingBot
             return await ProcessHttp(HttpMethod.Get, parameters, "/v5/position/list");
         }
 
-        public async Task<bool> SetLeverage(string symbol, string buyLeverage, string sellLeverage)
+        public async Task<string> SetLeverage(string symbol, string buyLeverage, string sellLeverage)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -189,7 +198,7 @@ namespace TradingBot
             return await ProcessHttp(HttpMethod.Post, parameters, "/v5/position/set-leverage");
         }
 
-        public async Task<bool> SetTradingStop(string symbol, string takeProfit, string stopLoss)
+        public async Task<string> SetTradingStop(string symbol, string takeProfit, string stopLoss)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -200,6 +209,35 @@ namespace TradingBot
                 {"positionIdx", 0}
             };
             return await ProcessHttp(HttpMethod.Post, parameters, "/v5/position/trading-stop");
+        }
+
+        public async Task<List<Dictionary<string, decimal>>> GetKline(string symbol, string interval, int limit)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                {"symbol", symbol},
+                {"interval", interval},
+                {"limit", limit}
+            };
+
+            var json = await ProcessHttp(HttpMethod.Get, parameters, "/v5/market/kline");
+            var klineRaw = JsonConvert.DeserializeObject<KlineRoot>(json!.ToString())!.result.list;
+            var klineList = new List<Dictionary<string, decimal>>();
+            foreach (List<string> list in klineRaw)
+            {
+                klineList.Add
+                (
+                    new Dictionary<string, decimal>
+                    {
+                        {"open", decimal.Parse(list[1])},
+                        {"high", decimal.Parse(list[2])},
+                        {"low", decimal.Parse(list[3])},
+                        {"close", decimal.Parse(list[4])},
+                        {"volume", decimal.Parse(list[5])}
+                    }
+                );
+            }
+            return klineList;
         }
     }
 }
